@@ -1,0 +1,130 @@
+import sys
+
+class CoffeeMachine:
+    def __init__(self):
+        self.making_you_coffee = False
+        self.machine_supplies = [400, 540, 120, 9, 550]
+        self.espresso = [250, 0, 16, 1, 4]
+        self.latte = [350, 75, 20, 1, 7]
+        self.cappuccino = [200, 100, 12, 1, 6]
+        self.missing_components = list()
+        # create list for missing ingredient to make coffee
+        self.missing_ingredient = list()
+
+    def user_request(self):
+        while True:
+            print('Write action (buy, fill, take, remaining, exit):')
+            user_input = input().strip()
+            print()
+            # specify cases for user input
+            if user_input == 'buy':
+                self.buy()
+                print()
+            elif user_input == 'fill':
+                self.fill()
+                print()
+            elif user_input == 'take':
+                self.take()
+                print()
+            elif user_input == 'remaining':
+                self.machine_supply()
+                print()
+            elif user_input == 'exit':
+                sys.exit()
+    # script for current status
+    def machine_supply(self):
+        # output supplies of the coffee machine
+        print(f'''The coffee machine has:\n{self.machine_supplies[0]} of water\n{self.machine_supplies[1]} of milk\n{self.machine_supplies[2]} of coffee beans\n{self.machine_supplies[3]} of disposable cups\n${self.machine_supplies[4]} of money''')
+    def can_machine_make_coffee(self, user_option):
+        # global making_you_coffee
+        # global machine_supplies
+        if user_option == '1':
+            if self.machine_supplies[0] - self.espresso[0] >= 0 and self.machine_supplies[2] - self.espresso[2] >= 0 and self.machine_supplies[3] - self.espresso[3] >= 0:
+                print('I have enough resources, making you a coffee!')
+                self.making_you_coffee = True
+        if user_option == '2':
+            if self.machine_supplies[0] - self.latte[0] >= 0 and self.machine_supplies[1] - self.latte[1] >= 0 and self.machine_supplies[2] - self.latte[2] >= 0 and self.machine_supplies[3] - self.latte[3] >= 0:
+                print('I have enough resources, making you a coffee!')
+                self.making_you_coffee = True
+        if user_option == '3':
+            if self.machine_supplies[0] - self.cappuccino[0] >= 0 and self.machine_supplies[1] - self.cappuccino[1] >= 0 and self.machine_supplies[2] - self.cappuccino[2] >= 0 and self.machine_supplies[3] - self.cappuccino[3] >= 0:
+                print('I have enough resources, making you a coffee!')
+                self.making_you_coffee = True
+    def what_is_missing(self, user_option, drink):
+        # global machine_supplies
+        # global espresso
+        # global latte
+        # global cappuccino
+        # global missing_components
+        self.missing_components_message = ', '
+        if self.machine_supplies[0] - drink[0] < 0:
+            self.missing_components.append('water')
+        if self.machine_supplies[1] - drink[1] < 0:
+            self.missing_components.append('milk')
+        if self.machine_supplies[2] - drink[2] < 0:
+            self.missing_components.append('coffee beans')
+        if self.machine_supplies[3] - drink[3] < 0:
+            self.missing_components.append('disposable cups')
+        self.missing_components_message = self.missing_components_message.join(self.missing_components)
+        print('Sorry, not enough' , self.missing_components_message + '!')
+        self.missing_components_message = ', '
+        self.missing_components = list()
+    # script for buy mode with 3 options: 
+    # 1 - espresso, 2 - latte, 3 - cappuccino
+    def buy(self):
+        # global making_you_coffee
+        # global machine_supplies
+        # global espresso
+        # global latte
+        # global cappuccino
+        print('What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:')
+        coffee_option = input().strip()
+        if coffee_option == 'back':
+            pass
+        self.can_machine_make_coffee(coffee_option)
+        if self.making_you_coffee == True:   
+            if coffee_option == '1':
+                for i in range(0, 4):
+                    self.machine_supplies[i] -= self.espresso[i]
+                self.machine_supplies[4] += self.espresso[4]
+            elif coffee_option == '2':
+                for i in range(0, 4):
+                    self.machine_supplies[i] -= self.latte[i]
+                self.machine_supplies[4] += self.latte[4]
+            elif coffee_option == '3':
+                for i in range(0, 4):
+                    self.machine_supplies[i] -= self.cappuccino[i]
+                self.machine_supplies[4] += self.cappuccino[4]
+        else:
+            if coffee_option == '1':
+                self.what_is_missing(coffee_option, self.espresso)   
+            elif coffee_option == '2':
+                self.what_is_missing(coffee_option, self.latte)   
+            elif coffee_option == '3':
+                self.what_is_missing(coffee_option, self.cappuccino)
+        self.making_you_coffee = False
+    # script for fill mode
+
+    def fill(self):
+        print('Write how many ml of water do you want to add:')
+        self.machine_supplies[0] += int(input().strip())
+        print('Write how many ml of milk do you want to add:')
+        self.machine_supplies[1] += int(input().strip())
+        print('Write how many grams of coffee beans do you want to add:')
+        self.machine_supplies[2] += int(input().strip())
+        print('Write how many disposable cups of coffee do you want to add:')
+        self.machine_supplies[3] += int(input().strip())
+
+    def take(self):
+    #    global money_supply
+        print('I gave you $' + str(self.machine_supplies[4]))
+    #    money_supply -= money_supply
+        self.machine_supplies[4] = 0
+    # specify variable to indicate if coffee machine can make a cup of coffee for user
+    # taking input from user
+
+# initializing a coffee machine
+coffee_machine = CoffeeMachine()
+
+# taking user input from console
+coffee_machine.user_request()
