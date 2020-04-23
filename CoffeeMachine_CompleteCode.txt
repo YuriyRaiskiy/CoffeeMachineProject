@@ -11,7 +11,7 @@ class CoffeeMachine:
         self.missing_components = list()
 
     def user_request(self):
-        user_input = input('Write action (buy, fill, take, remaining, exit): \n').strip()
+		user_input = input('Write action (buy, fill, take, remaining, exit): \n').strip()
         while True:
             # specify cases for user input
             if user_input == 'buy':
@@ -32,8 +32,6 @@ class CoffeeMachine:
         print(f'''The coffee machine has:\n{self.machine_supplies[0]} of water\n{self.machine_supplies[1]} of milk\n{self.machine_supplies[2]} of coffee beans\n{self.machine_supplies[3]} of disposable cups\n${self.machine_supplies[4]} of money\n''')
     
     def can_machine_make_coffee(self, user_option):
-        # global making_you_coffee
-        # global machine_supplies
         if user_option == '1':
             if self.machine_supplies[0] - self.espresso[0] >= 0 and self.machine_supplies[2] - self.espresso[2] >= 0 and self.machine_supplies[3] - self.espresso[3] >= 0:
                 print('I have enough resources, making you a coffee!')
