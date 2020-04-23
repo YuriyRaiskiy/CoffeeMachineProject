@@ -2,11 +2,11 @@ class CoffeeMachine:
     def __init__(self):
         self.making_you_coffee = False
         # set up initial coffee machine supplies: : [0] - water, [1] - milk, [2] - coffee beans, [3] - disposable cups, [4] - money 
-        self.machine_supplies = [0, 0, 120, 9, 550]
+        self.machine_supplies = [500, 540, 120, 9, 550]
         # initialize recipes for different types of coffee: [0] - water, [1] - milk, [2] - coffee beans, [3] - disposable cups, [4] - price
-        self.espresso = [250, 0, 16, 1, 4]
-        self.latte = [350, 75, 20, 1, 7]
-        self.cappuccino = [200, 100, 12, 1, 6]
+        self.espresso = (250, 0, 16, 1, 4)
+        self.latte = (350, 75, 20, 1, 7)
+        self.cappuccino = (200, 100, 12, 1, 6)
         # create list for missing ingredient to make coffee
         self.missing_components = list()
 
