@@ -1,83 +1,105 @@
-# Write your code here
-import random
-
-class HangmanGame:
+class CoffeeMachine:
     def __init__(self):
-        self.welcome = 'H A N G M A N'
-        self.menu = 'Type "play" to play the game, "exit" to quit: '
-        self.game_word = random.choice(['python', 'java', 'kotlin', 'javascript'])
-        self.current_guess = list('-' * len(self.game_word))
-        self.game_letters = set(self.game_word)
-        self.user_try = 0
-        self.tries = 8
-        self.tried_letters = set()
-        self.possible_letters = 'abcdefghijklmnopqrstuvwxyz'
-        self.errors_status = None
+        self.making_you_coffee = False
+        # set up initial coffee machine supplies: : [0] - water, [1] - milk, [2] - coffee beans, [3] - disposable cups, [4] - money 
+        self.machine_supplies = [500, 540, 120, 9, 550]
+        # initialize recipes for different types of coffee: [0] - water, [1] - milk, [2] - coffee beans, [3] - disposable cups, [4] - price
+        self.espresso = (250, 0, 16, 1, 4)
+        self.latte = (350, 75, 20, 1, 7)
+        self.cappuccino = (200, 100, 12, 1, 6)
+        # create list for missing ingredient to make coffee
+        self.missing_components = list()
 
-    def start_game(self):
-        print(self.welcome)
-        user_option = input(self.menu).strip()
+    def user_request(self):
+        user_input = input('Write action (buy, fill, take, remaining, exit): \n').strip()
         while True:
-            if user_option == 'play':
-                HangmanGame.__init__(self)
-                self.simple_game()
-            else:
+            # specify cases for user input
+            if user_input == 'buy':
+                self.buy()
+            elif user_input == 'fill':
+                self.fill()
+            elif user_input == 'take':
+                self.take()
+            elif user_input == 'remaining':
+                self.machine_supply()
+            elif user_input == 'exit':
                 break
-            user_option = input(f'\n{self.menu}').strip()
+            user_input = input('\nWrite action (buy, fill, take, remaining, exit): \n').strip()
 
-    def simple_game(self):
-        while True:
-            print('\n{}'.format(''.join(self.current_guess)))
-            self.guess_letter(input(f'Input a letter: ').strip())
-            if ''.join(self.current_guess) == self.game_word or self.user_try == self.tries:
-                print(HangmanGame.end_game_message(self))
-                break
-
-    # function that handles user input
-    def guess_letter(self, user_input,):
-        # reset self.errors_status value to False
-        self.errors_status = False
-        # check if user input contains errors
-        HangmanGame.check_errors(self, user_input)
-        # check if user input is in the game word
-        if user_input not in self.game_letters and self.errors_status == False:
-            print('No such letter in the word')
-            self.user_try += 1
-        HangmanGame.store_indexes(self, user_input)
-        HangmanGame.update_guess(self, user_input)
-        self.tried_letters.add(user_input)
+    # script for current status
+    def machine_supply(self):
+        # output supplies of the coffee machine
+        print(f'''The coffee machine has:\n{self.machine_supplies[0]} of water\n{self.machine_supplies[1]} of milk\n{self.machine_supplies[2]} of coffee beans\n{self.machine_supplies[3]} of disposable cups\n${self.machine_supplies[4]} of money\n''')
     
-    def check_errors(self, user_input):
-        if len(user_input) > 1:
-            print('You should print a single letter')
-        elif user_input not in self.possible_letters:
-            print('It is not an ASCII lowercase letter')
-        elif user_input in self.tried_letters:
-            print('You already typed this letter')
-        # change the value of self.errors_status to True if an error occurs
-        if user_input in self.tried_letters or user_input not in self.possible_letters or len(user_input) > 1:
-            self.errors_status = True
+    def can_machine_make_coffee(self, user_option):
+        if user_option == '1':
+            if self.machine_supplies[0] - self.espresso[0] >= 0 and self.machine_supplies[2] - self.espresso[2] >= 0 and self.machine_supplies[3] - self.espresso[3] >= 0:
+                print('I have enough resources, making you a coffee!')
+                self.making_you_coffee = True
+        if user_option == '2':
+            if self.machine_supplies[0] - self.latte[0] >= 0 and self.machine_supplies[1] - self.latte[1] >= 0 and self.machine_supplies[2] - self.latte[2] >= 0 and self.machine_supplies[3] - self.latte[3] >= 0:
+                print('I have enough resources, making you a coffee!')
+                self.making_you_coffee = True
+        if user_option == '3':
+            if self.machine_supplies[0] - self.cappuccino[0] >= 0 and self.machine_supplies[1] - self.cappuccino[1] >= 0 and self.machine_supplies[2] - self.cappuccino[2] >= 0 and self.machine_supplies[3] - self.cappuccino[3] >= 0:
+                print('I have enough resources, making you a coffee!')
+                self.making_you_coffee = True
 
-    # function to store all user letter instances in the word
-    def store_indexes(self, user_input):
-        self.char_indexes = [] # list to store positions for each 'char' in 'game_word'
-        for i in range(len(self.game_word)):
-            if self.game_word[i] == user_input:
-                self.char_indexes.append(i)
-        return self.char_indexes
+    def what_is_missing(self, user_option, drink):
+        if self.machine_supplies[0] - drink[0] < 0:
+            self.missing_components.append('water')
+        if self.machine_supplies[1] - drink[1] < 0:
+            self.missing_components.append('milk')
+        if self.machine_supplies[2] - drink[2] < 0:
+            self.missing_components.append('coffee beans')
+        if self.machine_supplies[3] - drink[3] < 0:
+            self.missing_components.append('disposable cups')
+        self.missing_components_message = ', '.join(self.missing_components)
+        print(f'Sorry, not enough {self.missing_components_message}!')
+        self.missing_components = list()
+	
 
-    # function to update current state of guessing after user input
-    def update_guess(self, user_input):
-        for index in self.char_indexes:
-            if index in self.char_indexes:
-                self.current_guess[index] = user_input
+    # script for buy mode with 3 options: 
+    # 1 - espresso, 2 - latte, 3 - cappuccino
+    def buy(self):
+        coffee_option = input('\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu: \n').strip()
+        if coffee_option == 'back':
+            pass
+        self.can_machine_make_coffee(coffee_option)
+        if self.making_you_coffee == True:   
+            if coffee_option == '1':
+                for i in range(0, 4):
+                    self.machine_supplies[i] -= self.espresso[i]
+                self.machine_supplies[4] += self.espresso[4]
+            elif coffee_option == '2':
+                for i in range(0, 4):
+                    self.machine_supplies[i] -= self.latte[i]
+                self.machine_supplies[4] += self.latte[4]
+            elif coffee_option == '3':
+                for i in range(0, 4):
+                    self.machine_supplies[i] -= self.cappuccino[i]
+                self.machine_supplies[4] += self.cappuccino[4]
+        else:
+            if coffee_option == '1':
+                self.what_is_missing(coffee_option, self.espresso)   
+            elif coffee_option == '2':
+                self.what_is_missing(coffee_option, self.latte)   
+            elif coffee_option == '3':
+                self.what_is_missing(coffee_option, self.cappuccino)
+        self.making_you_coffee = False
 
-    # function to print final message for the user in the current game
-    def end_game_message(self):
-        if ''.join(self.current_guess) == self.game_word:
-            return 'You guessed the word!\nYou survived!'
-        return 'You are hanged!'
+    # script for fill mode
+    def fill(self):
+        self.machine_supplies[0] += int(input('\nWrite how many ml of water do you want to add: \n').strip())
+        self.machine_supplies[1] += int(input('Write how many ml of milk do you want to add: \n').strip())
+        self.machine_supplies[2] += int(input('Write how many grams of coffee beans do you want to add: \n').strip())
+        self.machine_supplies[3] += int(input('Write how many disposable cups of coffee do you want to add: ').strip())
 
-# initialize game and and user interface
-hangman1 = HangmanGame()
-hangman1.start_game()
+    def take(self):
+        print(f'I gave you ${self.machine_supplies[4]}')
+        self.machine_supplies[4] = 0
+
+# initializing a coffee machine
+coffee_machine = CoffeeMachine()
+# taking user input from console
+coffee_machine.user_request()
